@@ -3,6 +3,7 @@ from django.http import Http404
 from django.core.paginator import Paginator
 from .models import Board
 from register.models import User
+from tag.models import Tag
 
 def board_detail(request, pk):
     try:
@@ -24,13 +25,20 @@ def baord_write(request):
 
         title = request.POST.get('title')
         content = request.POST.get('content')
+        tags = request.POST.get('tags').split(',')
 
         board = Board()
         board.title = title
         board.contents = content
         board.writer = writer
-
         board.save()
+
+        for tag in tags:
+            if not (tag):
+                continue
+
+            tagModel, _ = Tag.objects.get_or_create(name=tag)
+            board.tags.add(tagModel)
 
         return redirect('/board/list')
     else:
@@ -41,7 +49,6 @@ def baord_list(request):
     # 모든 게시글을 가져올껀데 -은 역순이라 가장 최신것을 가져오게된다.
     all_boards = Board.objects.all().order_by('-id')
     page = request.GET.get('p', 2)
-    print(page)
     paginator = Paginator(all_boards, 3) # 한페이지당 2개의 글을 보여주겠다.
 
     boards = paginator.get_page(page)

@@ -6,5 +6,3 @@ urlpatterns = [
     path('list/', views.baord_list),
     path('write/', views.baord_write),
 ]
-
-
