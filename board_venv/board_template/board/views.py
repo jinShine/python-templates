@@ -1,12 +1,25 @@
 from django.shortcuts import render, redirect
+from django.http import Http404
 from .models import Board
+from register.models import User
 
 def board_detail(request, pk):
-    board = Board.objects.get(pk=pk)
+    try:
+        board = Board.objects.get(pk=pk)
+    except Board.DoesNotExist:
+        raise Http404('게시물을 찾을 수 없습니다.')
+
     return render(request, "board_detail.html", { 'board' : board })
 
 def baord_write(request):
+
+    if not (request.session.get('user')):
+        return redirect('/user/signin')
+
     if request.method == "POST":
+
+        user_id = request.session.get('user')
+        writer = User.objects.get(pk=user_id)
 
         title = request.POST.get('title')
         content = request.POST.get('content')
@@ -14,6 +27,7 @@ def baord_write(request):
         board = Board()
         board.title = title
         board.contents = content
+        board.writer = writer
 
         board.save()
 
