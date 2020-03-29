@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
+from django.core.paginator import Paginator
 from .models import Board
 from register.models import User
 
@@ -38,5 +39,10 @@ def baord_write(request):
 def baord_list(request):
 
     # 모든 게시글을 가져올껀데 -은 역순이라 가장 최신것을 가져오게된다.
-    boards = Board.objects.all().order_by('-id')
+    all_boards = Board.objects.all().order_by('-id')
+    page = request.GET.get('p', 2)
+    print(page)
+    paginator = Paginator(all_boards, 3) # 한페이지당 2개의 글을 보여주겠다.
+
+    boards = paginator.get_page(page)
     return render(request, "board_list.html", { 'boards' : boards })
