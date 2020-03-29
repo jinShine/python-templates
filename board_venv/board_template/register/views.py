@@ -46,7 +46,6 @@ def signin(request):
         if not (user_name and user_password):
             res_data["error"] = "모든 값을 입력 해야됩니다."
         else:
-
             try:
                 user = User.objects.get(name=user_name)
             except User.DoesNotExist:
@@ -68,17 +67,11 @@ def signin(request):
         return render(request, 'signin.html', res_data)
 
 def logout(request):
-
     if request.session.get('user'):
         del (request.session['user'])
 
     return redirect('/')
 
 def home(request):
-    user_id = request.session.get('user')
-
-    if user_id:
-        user: User = User.objects.get(pk = user_id)
-        return HttpResponse(user.name)
-    else:
-        return HttpResponse("HOME")
+    # template에서 로직 처리를 할 수 있다.
+    return render(request, 'home.html')
