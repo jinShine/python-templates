@@ -1,7 +1,7 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from .models import User
+
 
 def signout(request):
     if request.method == "GET":
@@ -21,15 +21,16 @@ def signout(request):
             res_data["error"] = "비밀번호가 다릅니다."
         else:
             userModel = User(
-                name = user_name,
-                email = user_email,
-                password= make_password(user_re_password),
-                age = user_age
+                name=user_name,
+                email=user_email,
+                password=make_password(user_re_password),
+                age=user_age
             )
 
             userModel.save()
 
         return render(request, 'signup.html', res_data)
+
 
 def signin(request):
     if request.method == "GET":
@@ -66,11 +67,13 @@ def signin(request):
 
         return render(request, 'signin.html', res_data)
 
+
 def logout(request):
     if request.session.get('user'):
         del (request.session['user'])
 
     return redirect('/')
+
 
 def home(request):
     # template에서 로직 처리를 할 수 있다.

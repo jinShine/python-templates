@@ -5,13 +5,15 @@ from .models import Board
 from register.models import User
 from tag.models import Tag
 
+
 def board_detail(request, pk):
     try:
         board = Board.objects.get(pk=pk)
     except Board.DoesNotExist:
         raise Http404('게시물을 찾을 수 없습니다.')
 
-    return render(request, "board_detail.html", { 'board' : board })
+    return render(request, "board_detail.html", {'board': board})
+
 
 def baord_write(request):
 
@@ -44,12 +46,13 @@ def baord_write(request):
     else:
         return render(request, "board_write.html")
 
+
 def baord_list(request):
 
     # 모든 게시글을 가져올껀데 -은 역순이라 가장 최신것을 가져오게된다.
     all_boards = Board.objects.all().order_by('-id')
     page = request.GET.get('p', 2)
-    paginator = Paginator(all_boards, 3) # 한페이지당 2개의 글을 보여주겠다.
+    paginator = Paginator(all_boards, 3)  # 한페이지당 2개의 글을 보여주겠다.
 
     boards = paginator.get_page(page)
-    return render(request, "board_list.html", { 'boards' : boards })
+    return render(request, "board_list.html", {'boards': boards})
